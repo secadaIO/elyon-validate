@@ -11,20 +11,20 @@ export async function orchestrate(req: ValidationRequest) {
   return runConcurrent(calls);
 }
 
-1️⃣2️⃣ src/validator/score.ts
+ src/validator/score.ts
 export function agreementScore(a: string, b: string): number {
   if (a === b) return 1.0;
   if (a.includes(b) || b.includes(a)) return 0.9;
   return 0.5;
 }
 
-1️⃣3️⃣ src/validator/compare.ts
+ src/validator/compare.ts
 export function findConflicts(a: string, b: string): string[] {
   if (a === b) return [];
   return ["Semantic divergence detected"];
 }
 
-1️⃣4️⃣ src/validator/consensus.ts
+ src/validator/consensus.ts
 import { ValidationResult } from "../types.js";
 
 export function determineConsensus(score: number): ValidationResult["consensus"] {
@@ -33,7 +33,7 @@ export function determineConsensus(score: number): ValidationResult["consensus"]
   return "REJECT";
 }
 
-1️⃣5️⃣ src/output/report.ts
+ src/output/report.ts
 import { ValidationResult, ModelResponse } from "../types.js";
 
 export function generateReport(
@@ -47,7 +47,7 @@ export function generateReport(
   };
 }
 
-1️⃣6️⃣ src/utils/timer.ts
+src/utils/timer.ts
 export async function measure<T>(
   label: string,
   fn: () => Promise<T>
@@ -56,15 +56,14 @@ export async function measure<T>(
   const result = await fn();
   return { ...result, latencyMs: Date.now() - start };
 }
-
-1️⃣7️⃣ src/utils/hash.ts (Optional, but powerful)
+src/utils/hash.ts (Optional, but powerful)
 import crypto from "crypto";
 
 export function sha256(input: string): string {
   return crypto.createHash("sha256").update(input).digest("hex");
 }
 
-1️⃣8️⃣ src/cli.ts (Main CLI Logic)
+src/cli.ts (Main CLI Logic)
 import { Command } from "commander";
 import fs from "fs";
 import { orchestrate } from "./engine/orchestrator.js";
@@ -109,7 +108,7 @@ program
 
 program.parse();
 
-1️⃣9️⃣ README.md (Short & Serious)
+README.md (Short & Serious)
 # elyon-validate
 
 Concurrent, independent AI validation with explicit consensus and disagreement.
