@@ -1,13 +1,17 @@
-import { ChatGPTAdapter } from "./chatgpt";
-import { GrokAdapter } from "./grok";
+import { chatgptAdapter } from "./chatgpt.js";
+import { grokAdapter } from "./grok.js";
+import type { Adapter } from "./types";
 
-export function getAdapter(name: string) {
-  switch (name) {
-    case "chatgpt":
-      return new ChatGPTAdapter();
-    case "grok":
-      return new GrokAdapter();
-    default:
-      throw new Error(`Unknown model adapter: ${name}`);
+const registry: Record<string, Adapter> = {
+  chatgpt: chatgptAdapter,
+  grok: grokAdapter
+};
+
+export function getAdapter(name: string): Adapter {
+  const adapter = registry[name];
+  if (!adapter) {
+    throw new Error(`Unknown adapter: ${name}`);
   }
+  return adapter;
 }
+
