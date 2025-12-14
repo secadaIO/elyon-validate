@@ -1,5 +1,5 @@
-import { ModelResponse } from "../types.js";
-import { measure } from "../utils/timer.js";
+import { ModelResponse } from "../types";
+import { measure } from "../utils/timer";
 
 export class ChatGPTAdapter {
   async invoke(content: string): Promise<ModelResponse> {

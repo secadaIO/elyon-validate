@@ -1,5 +1,5 @@
-import { ChatGPTAdapter } from "./chatgpt.js";
-import { GrokAdapter } from "./grok.js";
+import { ChatGPTAdapter } from "./chatgpt";
+import { GrokAdapter } from "./grok";
 
 export function getAdapter(name: string) {
   switch (name) {

@@ -1,21 +1,14 @@
 {
   "name": "elyon-validate",
   "version": "0.1.0",
-  "description": "Concurrent multi-model validation CLI",
-  "bin": {
-    "elyon": "./dist/bin/elyon.js"
-  },
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && elyon",
-    "dev": "ts-node src/cli.ts"
-  },
-  "dependencies": {
-    "commander": "^11.0.0",
-    "node-fetch": "^3.3.2"
+    "build": "tsc"
   },
   "devDependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "@types/node": "^25.0.2",
+    "typescript": "^5.4.0"
   }
 }
