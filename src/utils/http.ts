@@ -1,4 +1,13 @@
-import fetch from "node-fetch";
+export async function httpGet(url: string) {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+  }
+
+  return res.json();
+}
+
 
 export async function postJSON(
   url: string,

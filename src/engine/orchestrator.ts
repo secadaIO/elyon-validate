@@ -1,4 +1,7 @@
-// src/engine/orchestrator.ts
+import { ValidationRequest } from "../types";
+import { getAdapter } from "../adapters/index";
+import { runConcurrent } from "./concurrency";
+>>>>>>> 18a7eb1 (chore: stabilize CLI build, ESM runtime, and TypeScript configuration)
 
 import { scoreValidation } from "../validator/score";
 import { compareResults } from "../validator/compare";
