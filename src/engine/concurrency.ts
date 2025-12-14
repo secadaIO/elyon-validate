@@ -1,5 +1,5 @@
 export async function runConcurrent<T>(
-  tasks: (() => Promise<T>)[]
+  tasks: Array<() => Promise<T>>
 ): Promise<T[]> {
-  return Promise.all(tasks.map(t => t()));
+  return Promise.all(tasks.map(task => task()));
 }
