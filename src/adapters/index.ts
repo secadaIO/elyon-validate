@@ -1,6 +1,6 @@
 import { chatgptAdapter } from "./chatgpt.js";
 import { grokAdapter } from "./grok.js";
-import type { Adapter } from "./types";
+import type { Adapter } from "./types.ts";
 
 const registry: Record<string, Adapter> = {
   chatgpt: chatgptAdapter,

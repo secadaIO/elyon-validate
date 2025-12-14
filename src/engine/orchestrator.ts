@@ -1,10 +1,12 @@
-import type { ValidationRequest } from "../types";
+import type { ValidationRequest } from "../types.js";
+import type { ModelResult } from "../consensus/index.js";
 import { getAdapter } from "../adapters/index.js";
 import { runConcurrent } from "./concurrency.js";
 import { determineConsensus } from "../consensus/index.js";
 
+
 export async function orchestrate(req: ValidationRequest) {
-  const calls = req.models.map(model => {
+    const calls = req.models.map((model: string) => {
     const adapter = getAdapter(model);
     return async (): Promise<
       | { model: string; ok: true; output: string }
@@ -23,8 +25,9 @@ export async function orchestrate(req: ValidationRequest) {
     };
   });
 
-  const results = await runConcurrent(calls);
-  const consensus = determineConsensus(results);
+
+	const results = await runConcurrent(calls);
+	const consensus = determineConsensus(results);
 
   return {
     results,

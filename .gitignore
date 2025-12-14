@@ -14,3 +14,7 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# compiled JS should never live in src
+src/**/*.js
+

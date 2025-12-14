@@ -1,4 +1,4 @@
-import type { Adapter } from "./types";
+import type { Adapter } from "./types.ts";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { orchestrate } from "../engine/orchestrator.js";
-import type { Mode } from "../types";
+import type { Mode } from "../types.ts";
+
 
 
 function parseArgs() {

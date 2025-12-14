@@ -1,4 +1,4 @@
-import type { Adapter } from "./types";
+import type { Adapter } from "./types.ts";
 
 const GROK_API_KEY = process.env.GROK_API_KEY;
 
