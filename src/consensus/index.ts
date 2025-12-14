@@ -1,63 +1,73 @@
-import { agreementScore } from "./score";
-import { findDivergence } from "./compare";
-import type { ConsensusResult } from "./types";
+import type { ConsensusResult } from "./types.js";
+import type { ConsensusConfig } from "./config.js";
+import { DEFAULT_CONSENSUS_CONFIG } from "./config.js";
+import { computePairwiseAgreements } from "./quorum";
 
-type ModelResult =
+export type ModelResult =
   | { model: string; ok: true; output: string }
   | { model: string; ok: false; error: string };
-
-import { DEFAULT_CONSENSUS_CONFIG } from "./config";
-import type { ConsensusConfig } from "./config";
 
 export function determineConsensus(
   results: ModelResult[],
   config: ConsensusConfig = DEFAULT_CONSENSUS_CONFIG
 ): ConsensusResult {
-
   const successes = results.filter(
     (r): r is Extract<ModelResult, { ok: true }> => r.ok
   );
+
   const failures = results.filter(
     (r): r is Extract<ModelResult, { ok: false }> => !r.ok
   );
 
-  // If fewer than 2 successful responses, we can’t compare.
+  let decision: ConsensusResult["decision"] = "REVIEW";
+  let agreements: string[] = [];
+  let divergences: string[] = [];
+  let score = 0;
+
   if (successes.length < config.minSuccessfulModels) {
-    return {
-      decision: "REVIEW",
-      score: 0,
-      rationale: "Insufficient successful model responses for comparison",
-      agreements: [],
-      divergences: [],
-      failures: failures.map(f => f.model)
-    };
+    divergences = ["Insufficient successful model responses for quorum"];
+  } else {
+    const pairwise = computePairwiseAgreements(successes);
+
+    const strongAgreements = pairwise.filter(
+  (p: { score: number }) => p.score >= config.acceptThreshold
+);
+
+
+    if (strongAgreements.length > 0) {
+      decision = "ACCEPT";
+      score = Math.max(...strongAgreements.map((p: { score: number }) => p.score));
+      agreements = strongAgreements.flatMap(
+  (p: { models: [string, string] }) => p.models
+);
+
+
+    } else {
+      divergences = ["No strong agreement detected between any model pair"];
+    }
   }
 
-  // v1: compare the first two successes (chatgpt vs grok).
-  const a = successes[0];
-  const b = successes[1];
+  // ---- Step 3: Confidence bands (derived only) ----
+  let confidence: ConsensusResult["confidence"] = "LOW";
 
-  const score = agreementScore(a.output, b.output);
-  const divergences = findDivergence(a.output, b.output);
-
-  let decision: ConsensusResult["decision"] = "REVIEW";
-  if (score >= config.acceptThreshold) {
-  decision = "ACCEPT";
-} else if (score < config.rejectThreshold) {
-  decision = "REJECT";
-}
-
+  if (decision === "ACCEPT" && failures.length === 0 && divergences.length === 0) {
+    confidence = "HIGH";
+  } else if (
+    decision === "ACCEPT" ||
+    (decision === "REVIEW" && agreements.length > 0)
+  ) {
+    confidence = "MEDIUM";
+  }
 
   return {
     decision,
+    confidence,
     score,
     rationale:
       decision === "ACCEPT"
-        ? "Models strongly agree"
-        : decision === "REJECT"
-        ? "Models significantly diverge"
-        : "Models partially align; human review recommended",
-    agreements: score >= 0.9 ? [a.model, b.model] : [],
+        ? "Strong agreement detected between model pairs"
+        : "Review recommended due to insufficient or divergent agreement",
+    agreements,
     divergences,
     failures: failures.map(f => f.model)
   };
