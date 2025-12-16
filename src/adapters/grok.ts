@@ -17,7 +17,7 @@ export const grokAdapter: Adapter = {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "grok-2-latest",
+        model: "grok-4-1-fast-reasoning",
         messages: [
           { role: "user", content: input }
         ],
